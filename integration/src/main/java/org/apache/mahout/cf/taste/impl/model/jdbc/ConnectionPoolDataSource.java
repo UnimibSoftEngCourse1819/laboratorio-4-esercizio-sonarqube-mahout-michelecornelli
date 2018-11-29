@@ -114,11 +114,10 @@ public final class ConnectionPoolDataSource implements DataSource {
     public Connection createConnection() throws SQLException {
       Connection connection = null;
       try {
-          underlyingDataSource.getConnection();
+    	  connection = underlyingDataSource.getConnection();
           connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
           connection.setHoldability(ResultSet.CLOSE_CURSORS_AT_COMMIT);
       } catch (SQLException e) {
-    	  connection.close();
       }
       return connection;
     }
