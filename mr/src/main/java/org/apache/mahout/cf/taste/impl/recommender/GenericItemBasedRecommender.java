@@ -251,7 +251,7 @@ public class GenericItemBasedRecommender extends AbstractRecommender implements 
     if (count <= 1) {
       return Float.NaN;
     }
-    float estimate = (float) (preference / totalSimilarity);
+    float estimate = (float) ((totalSimilarity == 0.0) ? 0.0 :  (preference / totalSimilarity));
     if (capper != null) {
       estimate = capper.capEstimate(estimate);
     }
