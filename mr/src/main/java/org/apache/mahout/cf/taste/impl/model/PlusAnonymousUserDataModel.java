@@ -163,6 +163,7 @@ public class PlusAnonymousUserDataModel implements DataModel {
     }
     for (int i = 0; i < tempPrefs.length(); i++) {
       if (tempPrefs.getItemID(i) == itemID) {
+    	  //delegatePrefs may be null. handled by method cloneAndMergeInto
         return cloneAndMergeInto(delegatePrefs, itemID, tempPrefs.getUserID(i), tempPrefs.getValue(i));
       }
     }
