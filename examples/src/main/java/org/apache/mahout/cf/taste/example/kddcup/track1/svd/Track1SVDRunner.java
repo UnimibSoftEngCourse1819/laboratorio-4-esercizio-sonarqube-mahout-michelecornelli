@@ -103,9 +103,8 @@ public final class Track1SVDRunner {
     log.info("RMSE {}", rmse);
 
     log.info("Estimating test preferences...");
-    OutputStream out = null;
-    try {
-      out = new BufferedOutputStream(new FileOutputStream(resultFile));
+    try (OutputStream out = new BufferedOutputStream(new FileOutputStream(resultFile)))
+    {
 
       for (Pair<PreferenceArray,long[]> testPair
           : new DataFileIterable(KDDCupDataModel.getTestFile(dataFileDirectory))) {
@@ -116,8 +115,6 @@ public final class Track1SVDRunner {
           out.write(result);
         }
       }
-    } finally {
-      Closeables.close(out, false);
     }
     log.info("wrote estimates to {}, done.", resultFile.getAbsolutePath());
   }
