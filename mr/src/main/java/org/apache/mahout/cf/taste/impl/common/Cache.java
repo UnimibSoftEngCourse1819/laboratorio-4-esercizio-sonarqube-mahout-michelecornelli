@@ -30,7 +30,7 @@ import java.util.Iterator;
  * </p>
  *
  * <p>
- * The cache does not support {@code null} keys.
+ * The cacheMap does not support {@code null} keys.
  * </p>
  *
  * <p>
@@ -42,12 +42,12 @@ public final class Cache<K,V> implements Retriever<K,V> {
 
   private static final Object NULL = new Object();
   
-  private final FastMap<K,V> cache;
+  private final FastMap<K,V> cacheMap;
   private final Retriever<? super K,? extends V> retriever;
   
   /**
    * <p>
-   * Creates a new cache based on the given {@link Retriever}.
+   * Creates a new cacheMap based on the given {@link Retriever}.
    * </p>
    * 
    * @param retriever
@@ -59,18 +59,18 @@ public final class Cache<K,V> implements Retriever<K,V> {
   
   /**
    * <p>
-   * Creates a new cache based on the given {@link Retriever} and with given maximum size.
+   * Creates a new cacheMap based on the given {@link Retriever} and with given maximum size.
    * </p>
    * 
    * @param retriever
    *          object which can retrieve values for keys
    * @param maxEntries
-   *          maximum number of entries the cache will store before evicting some
+   *          maximum number of entries the cacheMap will store before evicting some
    */
   public Cache(Retriever<? super K,? extends V> retriever, int maxEntries) {
     Preconditions.checkArgument(retriever != null, "retriever is null");
     Preconditions.checkArgument(maxEntries >= 1, "maxEntries must be at least 1");
-    cache = new FastMap<K, V>(11, maxEntries);
+    cacheMap = new FastMap<K, V>(11, maxEntries);
     this.retriever = retriever;
   }
   
@@ -80,7 +80,7 @@ public final class Cache<K,V> implements Retriever<K,V> {
    * </p>
    * 
    * @param key
-   *          cache key
+   *          cacheMap key
    * @return value for that key
    * @throws TasteException
    *           if an exception occurs while retrieving a new cached value
@@ -88,8 +88,8 @@ public final class Cache<K,V> implements Retriever<K,V> {
   @Override
   public V get(K key) throws TasteException {
     V value;
-    synchronized (cache) {
-      value = cache.get(key);
+    synchronized (cacheMap) {
+      value = cacheMap.get(key);
     }
     if (value == null) {
       return getAndCacheValue(key);
@@ -103,20 +103,20 @@ public final class Cache<K,V> implements Retriever<K,V> {
    * </p>
    * 
    * @param key
-   *          cache key
+   *          cacheMap key
    */
   public void remove(K key) {
-    synchronized (cache) {
-      cache.remove(key);
+    synchronized (cacheMap) {
+      cacheMap.remove(key);
     }
   }
 
   /**
-   * Clears all cache entries whose key matches the given predicate.
+   * Clears all cacheMap entries whose key matches the given predicate.
    */
   public void removeKeysMatching(MatchPredicate<K> predicate) {
-    synchronized (cache) {
-      Iterator<K> it = cache.keySet().iterator();
+    synchronized (cacheMap) {
+      Iterator<K> it = cacheMap.keySet().iterator();
       while (it.hasNext()) {
         K key = it.next();
         if (predicate.matches(key)) {
@@ -127,11 +127,11 @@ public final class Cache<K,V> implements Retriever<K,V> {
   }
 
   /**
-   * Clears all cache entries whose value matches the given predicate.
+   * Clears all cacheMap entries whose value matches the given predicate.
    */
   public void removeValueMatching(MatchPredicate<V> predicate) {
-    synchronized (cache) {
-      Iterator<V> it = cache.values().iterator();
+    synchronized (cacheMap) {
+      Iterator<V> it = cacheMap.values().iterator();
       while (it.hasNext()) {
         V value = it.next();
         if (predicate.matches(value)) {
@@ -143,12 +143,12 @@ public final class Cache<K,V> implements Retriever<K,V> {
   
   /**
    * <p>
-   * Clears the cache.
+   * Clears the cacheMap.
    * </p>
    */
   public void clear() {
-    synchronized (cache) {
-      cache.clear();
+    synchronized (cacheMap) {
+      cacheMap.clear();
     }
   }
   
@@ -157,8 +157,8 @@ public final class Cache<K,V> implements Retriever<K,V> {
     if (value == null) {
       value = (V) NULL;
     }
-    synchronized (cache) {
-      cache.put(key, value);
+    synchronized (cacheMap) {
+      cacheMap.put(key, value);
     }
     return value;
   }
