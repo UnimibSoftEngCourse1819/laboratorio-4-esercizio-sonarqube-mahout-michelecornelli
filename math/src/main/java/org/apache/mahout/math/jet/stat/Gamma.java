@@ -132,7 +132,7 @@ public final class Gamma {
       z *= x;
     }
 
-    while (x < 0.0) {
+    while (x <= 0.0) {
       if (x == 0.0) {
         throw new ArithmeticException("gamma: singular");
       }
