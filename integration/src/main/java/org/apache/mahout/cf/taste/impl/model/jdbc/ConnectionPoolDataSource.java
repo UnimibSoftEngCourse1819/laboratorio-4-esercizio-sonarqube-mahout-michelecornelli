@@ -112,13 +112,9 @@ public final class ConnectionPoolDataSource implements DataSource {
     
     @Override
     public Connection createConnection() throws SQLException {
-      Connection connection = null;
-      try {
-    	  connection = underlyingDataSource.getConnection();
-          connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
-          connection.setHoldability(ResultSet.CLOSE_CURSORS_AT_COMMIT);
-      } catch (SQLException e) {
-      }
+      Connection connection = underlyingDataSource.getConnection();
+      connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+      connection.setHoldability(ResultSet.CLOSE_CURSORS_AT_COMMIT);
       return connection;
     }
   }
