@@ -117,34 +117,34 @@ public final class FileBasedSparseBinaryMatrix extends AbstractMatrix {
     FileOutputStream fos = new FileOutputStream(f);
 
     // write header
-    DataOutputStream out = new DataOutputStream(fos);
-    out.writeInt(MAGIC_NUMBER_V0);
-    out.writeInt(m.rowSize());
-    out.writeInt(m.columnSize());
-
-    // compute offsets and write row headers
-    for (MatrixSlice row : m) {
-      int nondefaultElements = row.vector().getNumNondefaultElements();
-      out.writeInt(nondefaultElements);
+    
+    try (DataOutputStream out = new DataOutputStream(fos)) {
+	    out.writeInt(MAGIC_NUMBER_V0);
+	    out.writeInt(m.rowSize());
+	    out.writeInt(m.columnSize());
+	
+	    // compute offsets and write row headers
+	    for (MatrixSlice row : m) {
+	      int nondefaultElements = row.vector().getNumNondefaultElements();
+	      out.writeInt(nondefaultElements);
+	    }
+	
+	    // write rows
+	    for (MatrixSlice row : m) {
+	      List<Integer> columns = Lists.newArrayList(Iterables.transform(row.vector().nonZeroes(),
+	        new Function<Vector.Element, Integer>() {
+	          @Override
+	          public Integer apply(Vector.Element element) {
+	            return element.index();
+	          }
+	        }));
+	      Collections.sort(columns);
+	
+	      for (Integer column : columns) {
+	        out.writeInt(column);
+	      }
+	    }
     }
-
-    // write rows
-    for (MatrixSlice row : m) {
-      List<Integer> columns = Lists.newArrayList(Iterables.transform(row.vector().nonZeroes(),
-        new Function<Vector.Element, Integer>() {
-          @Override
-          public Integer apply(Vector.Element element) {
-            return element.index();
-          }
-        }));
-      Collections.sort(columns);
-
-      for (Integer column : columns) {
-        out.writeInt(column);
-      }
-    }
-
-    out.close();
     fos.close();
   }
 
