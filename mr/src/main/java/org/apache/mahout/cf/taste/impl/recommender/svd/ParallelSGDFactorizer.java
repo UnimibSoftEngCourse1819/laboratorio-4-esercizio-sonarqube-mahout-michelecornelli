@@ -227,7 +227,7 @@ public class ParallelSGDFactorizer extends AbstractFactorizer {
 
   //TODO: needs optimization
   private double getMu(int i) {
-    return mu0 * Math.pow(decayFactor, i - 1) * Math.pow(i + stepOffset, forgettingExponent);
+    return mu0 * Math.pow(decayFactor, (double) (i - 1)) * Math.pow((double) (i + stepOffset), forgettingExponent);
   }
 
   @Override
